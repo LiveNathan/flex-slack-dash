@@ -22,7 +22,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
-import dev.nathanlively.data.Task;
+import dev.nathanlively.domain.Task;
 import dev.nathanlively.services.TaskService;
 import dev.nathanlively.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;

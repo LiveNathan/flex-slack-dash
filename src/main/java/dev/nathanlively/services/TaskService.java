@@ -1,7 +1,7 @@
 package dev.nathanlively.services;
 
-import dev.nathanlively.data.Task;
-import dev.nathanlively.data.TaskRepository;
+import dev.nathanlively.domain.Task;
+
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
