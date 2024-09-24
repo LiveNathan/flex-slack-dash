@@ -1,0 +1,9 @@
+{
+  "lumoImports" : [ "typography", "color", "spacing", "badge", "utility" ],
+  "assets" : {
+    "@fontsource/source-sans-pro" : {
+      "*.css" : "@fontsource/source-sans-pro",
+      "files/*" : "@fontsource/source-sans-pro/files"
+    }
+  }
+}
