@@ -1,8 +1,5 @@
 package dev.nathanlively.data;
 
-import jakarta.persistence.Entity;
-
-@Entity
 public class Task extends AbstractEntity {
 
     private String description;
