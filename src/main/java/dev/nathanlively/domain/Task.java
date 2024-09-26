@@ -41,7 +41,7 @@ public class Task {
         this.hoursEstimate = ValidationUtilities.validateNonNegative(hoursEstimate, "Hours estimate must not be negative");
         this.tags = tags == null ? new HashSet<>() : new HashSet<>(tags);
         this.priority = priority == null ? Priority.P3_LOW : priority;
-        this.followers = followers == null ? new HashSet<>() : new HashSet<>(followers);
+        this.followers = followers == null ? new HashSet<>(Set.of(requester)) : new HashSet<>(followers);
         this.blockers = blockers == null ? new ArrayList<>() : new ArrayList<>(blockers);
         this.createdAt = ValidationUtilities.requireNonNull(createdAt, "CreatedAt must not be null");
         this.modifiedAt = createdAt;
@@ -74,5 +74,29 @@ public class Task {
 
     public String title() {
         return title;
+    }
+
+    public Person requester() {
+        return requester;
+    }
+
+    public Set<Person> owners() {
+        return owners;
+    }
+
+    public TaskStatus status() {
+        return status;
+    }
+
+    public float hoursEstimate() {
+        return hoursEstimate;
+    }
+
+    public Priority priority() {
+        return priority;
+    }
+
+    public Set<Person> followers() {
+        return followers;
     }
 }
