@@ -3,6 +3,7 @@ package dev.nathanlively.domain;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TaskTest {
 
@@ -28,9 +29,17 @@ class TaskTest {
     @Test
     void modifyStatus() throws Exception {
         Task actual = Task.create("banana22", "Task title", person, fixedClock);
-
+        actual.estimate(1f);
         actual.start();
 
         assertThat(actual.status()).isEqualTo(TaskStatus.STARTED);
     }
+
+    @Test
+    void taskMustBeEstimatedBeforeStarted() throws Exception {
+        Task actual = Task.create("banana22", "Task title", person, fixedClock);
+
+        assertThatThrownBy(actual::start)
+                .isInstanceOf(TaskNotEstimatedException.class)
+                .hasMessage("Cannot start task before it is estimated.");    }
 }

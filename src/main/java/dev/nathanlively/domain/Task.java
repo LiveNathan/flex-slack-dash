@@ -109,6 +109,12 @@ public class Task {
     }
 
     public void start() {
+        if (this.hoursEstimate == 0.0f) {
+            throw new TaskNotEstimatedException();
+        }
         this.status = TaskStatus.STARTED;
     }
+
+    public void estimate(float estimatedHours) {
+        this.hoursEstimate = ValidationUtilities.validateNonNegative(estimatedHours, "Hours estimate must not be negative");    }
 }
