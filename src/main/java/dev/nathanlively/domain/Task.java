@@ -29,7 +29,7 @@ public class Task {
 
     private Task(String id, String title, String description, Person requester, Set<Person> owners, Instant dueDate,
                  float hoursEstimate, Set<Tag> tags, Priority priority, Set<Person> followers,
-                 List<Blocker> blockers, Instant createdAt, Instant modifiedAt, List<Comment> comments) {
+                 List<Blocker> blockers, Instant createdAt, List<Comment> comments) {
 
         this.id = ValidationUtilities.validateNotBlank(id, "ID must not be blank");
         this.title = ValidationUtilities.validateNotBlank(title, "Title must not be blank");
@@ -50,12 +50,12 @@ public class Task {
 
     public static Task create(String id, String title, Person creator) {
         return new Task(id, title, null, creator, null, null, 0.0f, null,
-                null, null, null, new MySystemClock().now(), null, null);
+                null, null, null, new MySystemClock().now(), null);
     }
 
     public static Task create(String id, String title, Person creator, MyClock clock) {
         return new Task(id, title, null, creator, null, null, 0.0f, null,
-                null, null, null, clock.now(), null, null);
+                null, null, null, clock.now(), null);
     }
 
     public void updateTaskDetails(String newDescription, Priority newPriority) {
@@ -106,5 +106,9 @@ public class Task {
 
     public Instant modifiedAt() {
         return modifiedAt;
+    }
+
+    public void start() {
+        this.status = TaskStatus.STARTED;
     }
 }

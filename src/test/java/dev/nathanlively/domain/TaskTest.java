@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskTest {
+
+    private final MyClock fixedClock = FixedClockFactory.feb2at9am();
+    private final Person person = new Person("Nathan", "nathanlively@gmail.com");
+
     @Test
     void create() {
-        Person person = new Person("Nathan", "nathanlively@gmail.com");
-        MyClock fixedClock = FixedClockFactory.feb2at9am();
-
         Task actual = Task.create("banana22", "Task title", person, fixedClock);
 
         assertThat(actual.id()).isEqualTo("banana22");
@@ -22,5 +23,14 @@ class TaskTest {
         assertThat(actual.followers()).contains(person);
         assertThat(actual.createdAt()).isEqualTo(fixedClock.now());
         assertThat(actual.modifiedAt()).isEqualTo(fixedClock.now());
+    }
+
+    @Test
+    void modifyStatus() throws Exception {
+        Task actual = Task.create("banana22", "Task title", person, fixedClock);
+
+        actual.start();
+
+        assertThat(actual.status()).isEqualTo(TaskStatus.STARTED);
     }
 }
