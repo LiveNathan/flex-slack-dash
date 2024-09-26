@@ -35,7 +35,7 @@ public class Task {
         this.title = ValidationUtilities.validateNotBlank(title, "Title must not be blank");
         this.description = description;
         this.requester = ValidationUtilities.requireNonNull(requester, "Requester must not be null");
-        this.owners = owners == null ? Set.of(requester) : new HashSet<>(owners);
+        this.owners = owners == null ? new HashSet<>() : new HashSet<>(owners);
         this.dueDate = dueDate;
         this.status = TaskStatus.UNSTARTED;
         this.hoursEstimate = ValidationUtilities.validateNonNegative(hoursEstimate, "Hours estimate must not be negative");
@@ -108,13 +108,21 @@ public class Task {
         return modifiedAt;
     }
 
-    public void start() {
+    public void start(Person person) {
         if (this.hoursEstimate == 0.0f) {
             throw new TaskNotEstimatedException();
         }
         this.status = TaskStatus.STARTED;
+        this.owners.add(person);
     }
 
     public void estimate(float estimatedHours) {
         this.hoursEstimate = ValidationUtilities.validateNonNegative(estimatedHours, "Hours estimate must not be negative");    }
+
+    public void accept(Person person) {
+        if (person.jobTitle() != JobTitle.PROJECT_MANAGER) {
+            throw new PersonNotManagerException();
+        }
+        this.status = TaskStatus.ACCEPTED;
+    }
 }
