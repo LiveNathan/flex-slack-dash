@@ -1,6 +1,7 @@
 package dev.nathanlively.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.nathanlively.domain.Role;
 
 import java.util.Set;
 
