@@ -1,8 +1,7 @@
 package dev.nathanlively.domain;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Task {
 
@@ -21,6 +20,37 @@ public class Task {
     private Instant createdAt;
     private Instant modifiedAt;  // For tracking updates
     private List<Comment> comments;  // Comments with attachments and reactions
+
+    private Task(String id, String title, String description, Person requester, Set<Person> owners, Instant dueDate,
+                 float hoursEstimate, Set<Tag> tags, Priority priority, Set<Person> followers,
+                 List<Blocker> blockers, Instant createdAt, Instant modifiedAt, List<Comment> comments) {
+
+        this.id = Objects.requireNonNull(id, "ID must not be null");
+        this.title = Objects.requireNonNull(title, "Title must not be null");
+        this.description = description;
+        this.requester = Objects.requireNonNull(requester, "Requester must not be null");
+        this.owners = owners == null ? Set.of(requester) : new HashSet<>(owners);
+        this.dueDate = dueDate;
+        this.status = TaskStatus.UNSTARTED;
+        this.hoursEstimate = hoursEstimate;
+        this.tags = tags == null ? new HashSet<>() : new HashSet<>(tags);
+        this.priority = priority == null ? Priority.P3_LOW : priority;
+        this.followers = followers == null ? new HashSet<>() : new HashSet<>(followers);
+        this.blockers = blockers == null ? new ArrayList<>() : new ArrayList<>(blockers);
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt == null ? createdAt : modifiedAt;
+        this.comments = comments == null ? new ArrayList<>() : new ArrayList<>(comments);
+    }
+
+    public static Task create(String id, String title, Person creator) {
+        return new Task(id, title, null, creator, null, null, 0.0f, null,
+                null, null, null, new MySystemClock().now(), null, null);
+    }
+
+    public static Task create(String id, String title, Person creator, MyClock clock) {
+        return new Task(id, title, null, creator, null, null, 0.0f, null,
+                null, null, null, clock.now(), null, null);
+    }
 
     public void updateTaskDetails(String newDescription, Priority newPriority) {
         this.description = newDescription;
