@@ -99,4 +99,12 @@ public class Task {
     public Set<Person> followers() {
         return followers;
     }
+
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+    public Instant modifiedAt() {
+        return modifiedAt;
+    }
 }

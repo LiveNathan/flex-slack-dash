@@ -20,5 +20,7 @@ class TaskTest {
         assertThat(actual.hoursEstimate()).isEqualTo(0.0f);
         assertThat(actual.priority()).isEqualTo(Priority.P3_LOW);
         assertThat(actual.followers()).contains(person);
+        assertThat(actual.createdAt()).isEqualTo(fixedClock.now());
+        assertThat(actual.modifiedAt()).isEqualTo(fixedClock.now());
     }
 }
