@@ -1,7 +1,10 @@
 package dev.nathanlively.domain;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Task {
 
@@ -21,24 +24,27 @@ public class Task {
     private Instant modifiedAt;  // For tracking updates
     private List<Comment> comments;  // Comments with attachments and reactions
 
+    public Task() {
+    }
+
     private Task(String id, String title, String description, Person requester, Set<Person> owners, Instant dueDate,
                  float hoursEstimate, Set<Tag> tags, Priority priority, Set<Person> followers,
                  List<Blocker> blockers, Instant createdAt, Instant modifiedAt, List<Comment> comments) {
 
-        this.id = Objects.requireNonNull(id, "ID must not be null");
-        this.title = Objects.requireNonNull(title, "Title must not be null");
+        this.id = ValidationUtilities.validateNotBlank(id, "ID must not be blank");
+        this.title = ValidationUtilities.validateNotBlank(title, "Title must not be blank");
         this.description = description;
-        this.requester = Objects.requireNonNull(requester, "Requester must not be null");
+        this.requester = ValidationUtilities.requireNonNull(requester, "Requester must not be null");
         this.owners = owners == null ? Set.of(requester) : new HashSet<>(owners);
         this.dueDate = dueDate;
         this.status = TaskStatus.UNSTARTED;
-        this.hoursEstimate = hoursEstimate;
+        this.hoursEstimate = ValidationUtilities.validateNonNegative(hoursEstimate, "Hours estimate must not be negative");
         this.tags = tags == null ? new HashSet<>() : new HashSet<>(tags);
         this.priority = priority == null ? Priority.P3_LOW : priority;
         this.followers = followers == null ? new HashSet<>() : new HashSet<>(followers);
         this.blockers = blockers == null ? new ArrayList<>() : new ArrayList<>(blockers);
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt == null ? createdAt : modifiedAt;
+        this.createdAt = ValidationUtilities.requireNonNull(createdAt, "CreatedAt must not be null");
+        this.modifiedAt = createdAt;
         this.comments = comments == null ? new ArrayList<>() : new ArrayList<>(comments);
     }
 
@@ -64,5 +70,9 @@ public class Task {
 
     public String id() {
         return id;
+    }
+
+    public String title() {
+        return title;
     }
 }

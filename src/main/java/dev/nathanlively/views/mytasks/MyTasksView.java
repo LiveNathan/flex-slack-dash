@@ -8,8 +8,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.Notification.Position;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,14 +17,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import dev.nathanlively.domain.Task;
 import dev.nathanlively.services.TaskService;
 import dev.nathanlively.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
+
 import java.util.Optional;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @PageTitle("My Tasks")
 @Route(value = "my-tasks/:taskID?/:action?(edit)", layout = MainLayout.class)
@@ -71,15 +67,15 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         grid.addColumn("assignedTo").setAutoWidth(true);
         grid.addColumn("dueDate").setAutoWidth(true);
         grid.addColumn("status").setAutoWidth(true);
-        grid.setItems(query -> taskService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
+//        grid.setItems(query -> taskService.list(
+//                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
+//                .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(TASK_EDIT_ROUTE_TEMPLATE, event.getValue().getId()));
+                UI.getCurrent().navigate(String.format(TASK_EDIT_ROUTE_TEMPLATE, event.getValue().id()));
             } else {
                 clearForm();
                 UI.getCurrent().navigate(MyTasksView.class);
@@ -104,16 +100,11 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
                     this.task = new Task();
                 }
                 binder.writeBean(this.task);
-                taskService.update(this.task);
+//                taskService.update(this.task);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
                 UI.getCurrent().navigate(MyTasksView.class);
-            } catch (ObjectOptimisticLockingFailureException exception) {
-                Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
-                n.setPosition(Position.MIDDLE);
-                n.addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (ValidationException validationException) {
                 Notification.show("Failed to update the data. Check again that all values are valid");
             }
