@@ -10,14 +10,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 import dev.nathanlively.data.SamplePerson;
-import dev.nathanlively.services.SamplePersonService;
 import dev.nathanlively.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 
 @PageTitle("Home")
 @Route(value = "", layout = MainLayout.class)
@@ -61,7 +57,7 @@ public class HomeView extends Composite<VerticalLayout> {
         stripedGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         stripedGrid.setWidth("100%");
         stripedGrid.getStyle().set("flex-grow", "0");
-        setGridSampleData(stripedGrid);
+//        setGridSampleData(stripedGrid);
         layoutColumn3.setHeightFull();
         layoutRow2.setFlexGrow(1.0, layoutColumn3);
         layoutColumn3.setWidth("100%");
@@ -71,7 +67,7 @@ public class HomeView extends Composite<VerticalLayout> {
         stripedGrid2.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         stripedGrid2.setWidth("100%");
         stripedGrid2.getStyle().set("flex-grow", "0");
-        setGridSampleData(stripedGrid2);
+//        setGridSampleData(stripedGrid2);
         layoutColumn4.setHeightFull();
         layoutRow2.setFlexGrow(1.0, layoutColumn4);
         layoutColumn4.setWidth("100%");
@@ -81,7 +77,7 @@ public class HomeView extends Composite<VerticalLayout> {
         stripedGrid3.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         stripedGrid3.setWidth("100%");
         stripedGrid3.getStyle().set("flex-grow", "0");
-        setGridSampleData(stripedGrid3);
+//        setGridSampleData(stripedGrid3);
         getContent().add(layoutRow);
         layoutRow.add(h2);
         getContent().add(layoutRow2);
@@ -96,12 +92,10 @@ public class HomeView extends Composite<VerticalLayout> {
         layoutColumn4.add(stripedGrid3);
     }
 
-    private void setGridSampleData(Grid grid) {
-        grid.setItems(query -> samplePersonService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
-    }
+//    private void setGridSampleData(Grid grid) {
+//        grid.setItems(query -> samplePersonService.list(
+//                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
+//                .stream());
+//    }
 
-    @Autowired()
-    private SamplePersonService samplePersonService;
 }

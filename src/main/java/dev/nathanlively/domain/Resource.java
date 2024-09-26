@@ -1,4 +1,13 @@
 package dev.nathanlively.domain;
 
-public class Resource {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Resource extends Named{
+    private final List<Task> tasks;
+
+    protected Resource(String name) {
+        super(name);
+        this.tasks = new ArrayList<>();
+    }
 }
