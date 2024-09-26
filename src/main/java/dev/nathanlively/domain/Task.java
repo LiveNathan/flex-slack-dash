@@ -58,12 +58,6 @@ public class Task {
                 null, null, null, clock.now(), null);
     }
 
-    public void updateTaskDetails(String newDescription, Priority newPriority) {
-        this.description = newDescription;
-        this.priority = newPriority;
-        this.modifiedAt = Instant.now();  // Update modification date
-    }
-
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
@@ -108,21 +102,29 @@ public class Task {
         return modifiedAt;
     }
 
+    private void updateModified() {
+        this.modifiedAt = Instant.now();
+    }
+
     public void start(Person person) {
         if (this.hoursEstimate == 0.0f) {
             throw new TaskNotEstimatedException();
         }
         this.status = TaskStatus.STARTED;
         this.owners.add(person);
+        updateModified();
     }
 
     public void estimate(float estimatedHours) {
-        this.hoursEstimate = ValidationUtilities.validateNonNegative(estimatedHours, "Hours estimate must not be negative");    }
+        this.hoursEstimate = ValidationUtilities.validateNonNegative(estimatedHours, "Hours estimate must not be negative");
+        updateModified();
+    }
 
     public void accept(Person person) {
         if (person.jobTitle() != JobTitle.PROJECT_MANAGER) {
             throw new PersonNotManagerException();
         }
         this.status = TaskStatus.ACCEPTED;
+        updateModified();
     }
 }

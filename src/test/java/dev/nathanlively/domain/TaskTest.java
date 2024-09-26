@@ -27,7 +27,7 @@ class TaskTest {
     }
 
     @Test
-    void modifyStatus() throws Exception {
+    void modifyStatus() {
         Task actual = Task.create("banana22", "Task title", person, fixedClock);
         actual.estimate(1f);
         actual.start(person);
@@ -37,7 +37,7 @@ class TaskTest {
     }
 
     @Test
-    void taskMustBeEstimatedBeforeStarted() throws Exception {
+    void taskMustBeEstimatedBeforeStarted() {
         Task actual = Task.create("banana22", "Task title", person, fixedClock);
 
         assertThatThrownBy(() -> actual.start(person))
@@ -46,7 +46,7 @@ class TaskTest {
     }
     
     @Test
-    void onlyManagerCanAcceptReject() throws Exception {
+    void onlyManagerCanAcceptReject() {
         Task actual = Task.create("banana22", "Task title", person, fixedClock);
         assertThatThrownBy(() -> actual.accept(person))
                 .isInstanceOf(PersonNotManagerException.class)

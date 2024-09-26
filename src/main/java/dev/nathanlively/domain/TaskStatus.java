@@ -4,7 +4,6 @@ public enum TaskStatus {
     UNSTARTED,
     STARTED,
     FINISHED,
-    DELIVERED,
     REJECTED,
     ACCEPTED
 }
