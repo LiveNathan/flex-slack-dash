@@ -28,4 +28,20 @@ public class Account {
     public String username() {
         return username;
     }
+
+    public Person person() {
+        return person;
+    }
+
+    public byte[] profilePicture() {
+        return profilePicture;
+    }
+
+    public String hashedPassword() {
+        return hashedPassword;
+    }
+
+    public Set<Role> roles() {
+        return roles;
+    }
 }
