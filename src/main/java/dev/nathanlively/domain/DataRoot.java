@@ -7,7 +7,7 @@ public class DataRoot {
         super();
     }
 
-    public Accounts getAccounts() {
+    public Accounts accounts() {
         return accounts;
     }
 }

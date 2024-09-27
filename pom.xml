@@ -12,6 +12,7 @@
     <properties>
         <java.version>23</java.version>
         <vaadin.version>24.4.12</vaadin.version>
+        <eclipsestore.version>1.4.0</eclipsestore.version>
     </properties>
 
     <parent>
@@ -65,6 +66,15 @@
             <groupId>com.github.kkuegler</groupId>
             <artifactId>human-readable-ids-java</artifactId>
             <version>0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.store</groupId>
+            <artifactId>integrations-spring-boot3</artifactId>
+            <version>${eclipsestore.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
 
