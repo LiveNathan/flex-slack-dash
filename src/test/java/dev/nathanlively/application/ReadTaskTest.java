@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ReadTaskTest {
     @Test
-    void all() throws Exception {
+    void all() {
         AccountRepository accountRepository = InMemoryAccountRepository.createEmpty();
         TaskRepository taskRepository = InMemoryTaskRepository.createEmpty(accountRepository);
         ReadTask readTask = new ReadTask(taskRepository);
