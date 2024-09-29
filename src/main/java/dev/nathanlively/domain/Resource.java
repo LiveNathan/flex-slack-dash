@@ -10,4 +10,8 @@ public abstract class Resource extends Named{
         super(name);
         this.tasks = new ArrayList<>();
     }
+
+    public List<Task> tasks() {
+        return tasks;
+    }
 }

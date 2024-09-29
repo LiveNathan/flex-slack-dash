@@ -1,7 +1,7 @@
 package dev.nathanlively.security;
 
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
-import dev.nathanlively.views.login.LoginView;
+import dev.nathanlively.adapter.in.web.login.LoginView;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,8 +20,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import dev.nathanlively.adapter.in.web.MainLayout;
-import dev.nathanlively.application.TaskService;
+import dev.nathanlively.application.ReadTask;
+import dev.nathanlively.domain.Account;
 import dev.nathanlively.domain.Task;
+import dev.nathanlively.security.AuthenticatedUser;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.data.domain.PageRequest;
 
@@ -30,7 +33,7 @@ import java.util.Optional;
 @Route(value = "my-tasks/:taskID?/:action?(edit)", layout = MainLayout.class)
 @PermitAll
 public class MyTasksView extends Div implements BeforeEnterObserver {
-
+    private final AuthenticatedUser authenticatedUser;
     private final String TASK_ID = "taskID";
     private final String TASK_EDIT_ROUTE_TEMPLATE = "my-tasks/%s/edit";
 
@@ -50,10 +53,11 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
 
     private Task task;
 
-    private final TaskService taskService;
+    private final ReadTask readTask;
 
-    public MyTasksView(TaskService taskService) {
-        this.taskService = taskService;
+    public MyTasksView(AuthenticatedUser authenticatedUser, ReadTask readTask) {
+        this.authenticatedUser = authenticatedUser;
+        this.readTask = readTask;
         addClassNames("my-tasks-view");
 
         // Create UI
@@ -65,26 +69,32 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("title").setAutoWidth(true);
+        Optional<Account> maybeUser = authenticatedUser.get();
+        if (maybeUser.isPresent()) {
+            grid.addColumn("title").setAutoWidth(true);
 //        grid.addColumn("description").setAutoWidth(true);
 //        grid.addColumn("event").setAutoWidth(true);
 //        grid.addColumn("assignedTo").setAutoWidth(true);
 //        grid.addColumn("dueDate").setAutoWidth(true);
 //        grid.addColumn("status").setAutoWidth(true);
-        grid.setItems(query -> taskService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+            grid.setItems(query -> readTask.all(
+                    PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
+                    maybeUser.get().username()).stream());
+            grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
-        // when a row is selected or deselected, populate form
-        grid.asSingleSelect().addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(TASK_EDIT_ROUTE_TEMPLATE, event.getValue().id()));
-            } else {
-                clearForm();
-                UI.getCurrent().navigate(MyTasksView.class);
-            }
-        });
+            // when a row is selected or deselected, populate form
+            grid.asSingleSelect().addValueChangeListener(event -> {
+                if (event.getValue() != null) {
+                    UI.getCurrent().navigate(String.format(TASK_EDIT_ROUTE_TEMPLATE, event.getValue().id()));
+                } else {
+                    clearForm();
+                    UI.getCurrent().navigate(MyTasksView.class);
+                }
+            });
+        } else {
+            Anchor loginLink = new Anchor("login", "Sign in");
+            add(loginLink);
+        }
 
         // Configure Form
         binder = new BeanValidationBinder<>(Task.class);
@@ -119,7 +129,7 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<Long> taskId = event.getRouteParameters().get(TASK_ID).map(Long::parseLong);
         if (taskId.isPresent()) {
-            Optional<Task> taskFromBackend = taskService.get(taskId.get());
+            Optional<Task> taskFromBackend = readTask.get(taskId.get());
             if (taskFromBackend.isPresent()) {
                 populateForm(taskFromBackend.get());
             } else {

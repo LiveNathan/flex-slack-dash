@@ -92,7 +92,7 @@ public class HomeView extends Composite<VerticalLayout> {
     }
 
 //    private void setGridSampleData(Grid grid) {
-//        grid.setItems(query -> samplePersonService.list(
+//        grid.setItems(query -> samplePersonService.all(
 //                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
 //                .stream());
 //    }

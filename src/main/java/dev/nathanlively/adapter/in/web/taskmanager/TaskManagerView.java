@@ -20,7 +20,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import dev.nathanlively.adapter.in.web.MainLayout;
-import dev.nathanlively.application.TaskService;
+import dev.nathanlively.application.ReadTask;
 import dev.nathanlively.domain.Task;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -52,10 +52,10 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
 
     private Task task;
 
-    private final TaskService taskService;
+    private final ReadTask readTask;
 
-    public TaskManagerView(TaskService taskService) {
-        this.taskService = taskService;
+    public TaskManagerView(ReadTask readTask) {
+        this.readTask = readTask;
         addClassNames("task-manager-view");
 
         // UserInfo is used by Collaboration Engine and is used to share details
@@ -83,7 +83,7 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
         grid.addColumn("assignedTo").setAutoWidth(true);
         grid.addColumn("dueDate").setAutoWidth(true);
         grid.addColumn("status").setAutoWidth(true);
-//        grid.setItems(query -> taskService.list(
+//        grid.setItems(query -> taskService.all(
 //                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
 //                .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -131,7 +131,7 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<Long> taskId = event.getRouteParameters().get(TASK_ID).map(Long::parseLong);
         if (taskId.isPresent()) {
-            Optional<Task> taskFromBackend = taskService.get(taskId.get());
+            Optional<Task> taskFromBackend = readTask.get(taskId.get());
             if (taskFromBackend.isPresent()) {
                 populateForm(taskFromBackend.get());
             } else {

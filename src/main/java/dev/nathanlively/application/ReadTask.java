@@ -1,19 +1,22 @@
 package dev.nathanlively.application;
 
+import dev.nathanlively.application.port.TaskRepository;
 import dev.nathanlively.domain.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class TaskService {
+public class ReadTask {
 
-//    private final TaskRepository repository;
-//
-//    public TaskService(TaskRepository repository) {
-//        this.repository = repository;
-//    }
-//
+    private final TaskRepository repository;
+
+    public ReadTask(TaskRepository repository) {
+        this.repository = repository;
+    }
+
     public Optional<Task> get(Long id) {
 //        return repository.findById(id);
         return null;
@@ -26,12 +29,12 @@ public class TaskService {
 //    public void delete(Long id) {
 //        repository.deleteById(id);
 //    }
-//
-//    public Page<Task> list(Pageable pageable) {
-//        return repository.findAll(pageable);
-//    }
-//
-//    public Page<Task> list(Pageable pageable, Specification<Task> filter) {
+
+    public Page<Task> all(Pageable pageable, String username) {
+        return repository.findAllByUsername(username, pageable);
+    }
+
+//    public Page<Task> all(Pageable pageable, Specification<Task> filter) {
 //        return repository.findAll(filter, pageable);
 //    }
 //
