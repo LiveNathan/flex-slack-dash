@@ -17,10 +17,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import dev.nathanlively.adapter.in.web.MainLayout;
+import dev.nathanlively.application.TaskService;
 import dev.nathanlively.domain.Task;
-import dev.nathanlively.services.TaskService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -34,6 +36,7 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
 
     private final Grid<Task> grid = new Grid<>(Task.class, false);
 
+    private TextField title;
     private TextField description;
     private TextField event;
     private TextField assignedTo;
@@ -62,14 +65,15 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("description").setAutoWidth(true);
-        grid.addColumn("event").setAutoWidth(true);
-        grid.addColumn("assignedTo").setAutoWidth(true);
-        grid.addColumn("dueDate").setAutoWidth(true);
-        grid.addColumn("status").setAutoWidth(true);
-//        grid.setItems(query -> taskService.list(
-//                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-//                .stream());
+        grid.addColumn("title").setAutoWidth(true);
+//        grid.addColumn("description").setAutoWidth(true);
+//        grid.addColumn("event").setAutoWidth(true);
+//        grid.addColumn("assignedTo").setAutoWidth(true);
+//        grid.addColumn("dueDate").setAutoWidth(true);
+//        grid.addColumn("status").setAutoWidth(true);
+        grid.setItems(query -> taskService.list(
+                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
+                .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
         // when a row is selected or deselected, populate form
@@ -138,12 +142,14 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        description = new TextField("Description");
-        event = new TextField("Event");
-        assignedTo = new TextField("Assigned To");
-        dueDate = new TextField("Due Date");
-        status = new TextField("Status");
-        formLayout.add(description, event, assignedTo, dueDate, status);
+        title = new TextField("Title");
+//        description = new TextField("Description");
+//        event = new TextField("Event");
+//        assignedTo = new TextField("Assigned To");
+//        dueDate = new TextField("Due Date");
+//        status = new TextField("Status");
+//        formLayout.add(description, event, assignedTo, dueDate, status);
+        formLayout.add(title);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);

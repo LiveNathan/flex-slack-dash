@@ -19,8 +19,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import dev.nathanlively.application.TaskService;
 import dev.nathanlively.domain.Task;
-import dev.nathanlively.services.TaskService;
 import dev.nathanlively.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 

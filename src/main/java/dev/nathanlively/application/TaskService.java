@@ -1,4 +1,4 @@
-package dev.nathanlively.services;
+package dev.nathanlively.application;
 
 import dev.nathanlively.domain.Task;
 import org.springframework.stereotype.Service;
