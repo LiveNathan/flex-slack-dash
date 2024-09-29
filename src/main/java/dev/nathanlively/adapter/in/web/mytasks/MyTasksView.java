@@ -71,14 +71,16 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         // Configure Grid
         Optional<Account> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-            grid.addColumn("title").setAutoWidth(true);
+//            grid.addColumn("title").setAutoWidth(true);
+            grid.addColumn(Task::title).setAutoWidth(true);
 //        grid.addColumn("description").setAutoWidth(true);
 //        grid.addColumn("event").setAutoWidth(true);
 //        grid.addColumn("assignedTo").setAutoWidth(true);
 //        grid.addColumn("dueDate").setAutoWidth(true);
 //        grid.addColumn("status").setAutoWidth(true);
             grid.setItems(query -> readTask.all(
-                    PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
+                    PageRequest.of(query.getPage(), query.getPageSize(),
+                            VaadinSpringDataHelpers.toSpringDataSort(query)),
                     maybeUser.get().username()).stream());
             grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
