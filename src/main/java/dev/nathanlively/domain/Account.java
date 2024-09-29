@@ -3,6 +3,7 @@ package dev.nathanlively.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Account {
@@ -43,5 +44,23 @@ public class Account {
 
     public Set<Role> roles() {
         return roles;
+    }
+
+    public void setPerson(Person person) {
+        this.person = Objects.requireNonNull(person, "Person cannot be null");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Account account = (Account) o;
+        return username.equals(account.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
     }
 }

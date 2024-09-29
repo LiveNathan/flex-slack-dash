@@ -11,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import dev.nathanlively.data.SamplePerson;
 import dev.nathanlively.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
@@ -27,13 +26,13 @@ public class HomeView extends Composite<VerticalLayout> {
         HorizontalLayout layoutRow2 = new HorizontalLayout();
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H2 h22 = new H2();
-        Grid stripedGrid = new Grid(SamplePerson.class);
+        Grid stripedGrid = new Grid();
         VerticalLayout layoutColumn3 = new VerticalLayout();
         H2 h23 = new H2();
-        Grid stripedGrid2 = new Grid(SamplePerson.class);
+        Grid stripedGrid2 = new Grid();
         VerticalLayout layoutColumn4 = new VerticalLayout();
         H2 h24 = new H2();
-        Grid stripedGrid3 = new Grid(SamplePerson.class);
+        Grid stripedGrid3 = new Grid();
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
         layoutRow.setWidthFull();
