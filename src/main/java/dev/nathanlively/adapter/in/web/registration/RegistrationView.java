@@ -34,7 +34,8 @@ public class RegistrationView extends VerticalLayout implements BeforeEnterObser
 
         add(cardWrapper);
 
-        RegistrationFormBinder registrationFormBinder = new RegistrationFormBinder(registrationForm, registerAccount);
+        RegistrationFormBinder registrationFormBinder = new RegistrationFormBinder(registrationForm,
+                registerAccount);
         registrationFormBinder.addBindingAndValidation();
     }
 

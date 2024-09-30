@@ -1,30 +1,22 @@
 package dev.nathanlively.adapter.in.web.mytasks;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import dev.nathanlively.adapter.in.web.MainLayout;
 import dev.nathanlively.application.ReadTask;
-import dev.nathanlively.domain.Account;
+import dev.nathanlively.application.UpdateTask;
 import dev.nathanlively.domain.Task;
 import dev.nathanlively.security.AuthenticatedUser;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -39,82 +31,26 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
     private final Grid<Task> grid = new Grid<>(Task.class, false);
 
     private TextField title;
-    private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
-
-    private final BeanValidationBinder<Task> binder;
 
     private Task task;
 
     private final ReadTask readTask;
+    private final UpdateTask updateTask;
 
-    public MyTasksView(AuthenticatedUser authenticatedUser, ReadTask readTask) {
+    public MyTasksView(AuthenticatedUser authenticatedUser, BeanValidationBinder<Task> binder,
+                       ReadTask readTask, UpdateTask updateTask) {
         this.authenticatedUser = authenticatedUser;
         this.readTask = readTask;
+        this.updateTask = updateTask;
         addClassNames("my-tasks-view");
 
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
-
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
         add(splitLayout);
-
-        // Configure Grid
-        Optional<Account> maybeUser = authenticatedUser.get();
-        if (maybeUser.isPresent()) {
-            grid.addColumn(Task::title).setAutoWidth(true);
-            grid.setItems(query -> readTask.all(
-                    PageRequest.of(query.getPage(), query.getPageSize(),
-                            VaadinSpringDataHelpers.toSpringDataSort(query)),
-                    maybeUser.get().username()).stream());
-            grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-
-            // when a row is selected or deselected, populate form
-            grid.asSingleSelect().addValueChangeListener(event -> {
-                if (event.getValue() != null) {
-                    UI.getCurrent().navigate(String.format(TASK_EDIT_ROUTE_TEMPLATE, event.getValue().id()));
-                } else {
-                    clearForm();
-                    UI.getCurrent().navigate(MyTasksView.class);
-                }
-            });
-        } else {
-            Anchor loginLink = new Anchor("login", "Sign in");
-            add(loginLink);
-        }
-
-        // Configure Form
-
-
-
-        binder = new BeanValidationBinder<>(Task.class);
-
-        // Bind fields. This is where you'd define e.g. validation rules
-
-        binder.bindInstanceFields(this);
-
-        cancel.addClickListener(e -> {
-            clearForm();
-            refreshGrid();
-        });
-
-        save.addClickListener(e -> {
-            try {
-                if (this.task == null) {
-                    this.task = new Task();
-                }
-                binder.writeBean(this.task);
-//                taskService.update(this.task);
-                clearForm();
-                refreshGrid();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(MyTasksView.class);
-            } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
-            }
-        });
     }
 
     @Override
@@ -147,15 +83,9 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
 
         editorDiv.add(myTasksForm);
         splitLayout.addToSecondary(editorLayoutDiv);
-    }
 
-    private void createButtonLayout(Div editorLayoutDiv) {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setClassName("button-layout");
-        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
-        editorLayoutDiv.add(buttonLayout);
+        MyTasksFormBinder formBinder = new MyTasksFormBinder(myTasksForm, updateTask);
+        formBinder.addBindingAndValidation();
     }
 
     private void createGridLayout(SplitLayout splitLayout) {
@@ -176,6 +106,5 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
 
     private void populateForm(Task value) {
         this.task = value;
-        binder.readBean(this.task);
     }
 }
