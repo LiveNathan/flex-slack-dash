@@ -1,5 +1,6 @@
 package dev.nathanlively.application;
 
+import dev.nathanlively.adapter.in.web.mytasks.TaskDto;
 import dev.nathanlively.application.port.TaskRepository;
 import dev.nathanlively.domain.Task;
 import org.springframework.data.domain.Page;
@@ -30,8 +31,9 @@ public class ReadTask {
 //        repository.deleteById(id);
 //    }
 
-    public Page<Task> all(Pageable pageable, String username) {
-        return repository.findAllByUsername(username, pageable);
+    public Page<TaskDto> all(Pageable pageable, String username) {
+        Page<Task> tasks = repository.findAllByUsername(username, pageable);
+        return tasks.map(TaskDto::from);
     }
 
 //    public Page<Task> all(Pageable pageable, Specification<Task> filter) {

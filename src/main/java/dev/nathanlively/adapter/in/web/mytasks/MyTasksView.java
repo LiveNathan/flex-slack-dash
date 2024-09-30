@@ -1,12 +1,8 @@
 package dev.nathanlively.adapter.in.web.mytasks;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -24,32 +20,28 @@ import java.util.Optional;
 @Route(value = "my-tasks/:taskID?/:action?(edit)", layout = MainLayout.class)
 @PermitAll
 public class MyTasksView extends Div implements BeforeEnterObserver {
-    private final AuthenticatedUser authenticatedUser;
     private final String TASK_ID = "taskID";
-    private final String TASK_EDIT_ROUTE_TEMPLATE = "my-tasks/%s/edit";
-
-    private final Grid<Task> grid = new Grid<>(Task.class, false);
-
-    private TextField title;
-    private final Button save = new Button("Save");
-
-    private Task task;
-
+    private final MyTasksGrid myTasksGrid;
     private final ReadTask readTask;
     private final UpdateTask updateTask;
+    private final AuthenticatedUser authenticatedUser;
+    private final String TASK_EDIT_ROUTE_TEMPLATE = "my-tasks/%s/edit";
 
-    public MyTasksView(AuthenticatedUser authenticatedUser, BeanValidationBinder<Task> binder,
-                       ReadTask readTask, UpdateTask updateTask) {
-        this.authenticatedUser = authenticatedUser;
+    public MyTasksView(ReadTask readTask, UpdateTask updateTask, AuthenticatedUser authenticatedUser) {
         this.readTask = readTask;
         this.updateTask = updateTask;
+        this.authenticatedUser = authenticatedUser;
         addClassNames("my-tasks-view");
 
-        // Create UI
         SplitLayout splitLayout = new SplitLayout();
-        createGridLayout(splitLayout);
+        myTasksGrid = new MyTasksGrid(authenticatedUser, readTask, TASK_EDIT_ROUTE_TEMPLATE);
+        Div wrapper = new Div();
+        wrapper.setClassName("grid-wrapper");
+        wrapper.add(myTasksGrid);
+
         createEditorLayout(splitLayout);
 
+        splitLayout.addToPrimary(wrapper);
         add(splitLayout);
     }
 
@@ -88,16 +80,9 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         formBinder.addBindingAndValidation();
     }
 
-    private void createGridLayout(SplitLayout splitLayout) {
-        Div wrapper = new Div();
-        wrapper.setClassName("grid-wrapper");
-        splitLayout.addToPrimary(wrapper);
-        wrapper.add(grid);
-    }
-
     private void refreshGrid() {
-        grid.select(null);
-        grid.getDataProvider().refreshAll();
+        myTasksGrid.select(null);
+        myTasksGrid.getDataProvider().refreshAll();
     }
 
     private void clearForm() {

@@ -1,8 +1,8 @@
 package dev.nathanlively.application;
 
+import dev.nathanlively.adapter.in.web.mytasks.TaskDto;
 import dev.nathanlively.application.port.AccountRepository;
 import dev.nathanlively.application.port.TaskRepository;
-import dev.nathanlively.domain.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ class ReadTaskTest {
         Pageable pageable = Pageable.ofSize(10);
         String username = "travsi@micework.ch";
 
-        Page<Task> actual = readTask.all(pageable, username);
+        Page<TaskDto> actual = readTask.all(pageable, username);
 
         assertThat(actual).isEmpty();
     }

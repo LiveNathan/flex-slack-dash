@@ -4,9 +4,7 @@
 @import url('./views/my-tasks-view.css');
 @import url('./views/task-manager-view.css');
 @import url('./views/search-view.css');
-@import url('@fontsource/source-sans-pro/index.css');
 
 html {
-    --lumo-font-family: Source Sans Pro;
-
+    --lumo-font-family: 'Source Sans Pro', sans-serif;
 }

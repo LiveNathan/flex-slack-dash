@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
-    "@fontsource/source-sans-pro": "4.5.0",
+    "@fontsource/source-sans-pro": "^4.5.0",
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.4.9",
     "@vaadin/common-frontend": "0.0.19",
@@ -38,7 +38,7 @@
     "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
     "typescript": "5.4.5",
-    "vite": "5.4.2",
+    "vite": "^5.4.8",
     "vite-plugin-checker": "0.6.4",
     "workbox-build": "7.1.1",
     "workbox-core": "7.1.0",
