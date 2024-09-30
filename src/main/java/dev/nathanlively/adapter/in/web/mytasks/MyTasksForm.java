@@ -17,7 +17,11 @@ public class MyTasksForm extends FormLayout {
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
     private final Span errorMessageField = new Span();
+    private SaveListener saveListener;
 
+    public void setSaveListener(SaveListener saveListener) {
+        this.saveListener = saveListener;
+    }
     public MyTasksForm() {
         addClassName("my-tasks-form");
         title.setRequired(true);
@@ -36,6 +40,17 @@ public class MyTasksForm extends FormLayout {
         buttonLayout.add(save, cancel);
 
         add(title, errorMessageField, buttonLayout);
+    }
+
+    private void saveForm() {
+        if (saveListener != null) {
+            saveListener.onSave();
+        }
+    }
+
+    public interface SaveListener {
+
+        void onSave();
     }
 
     public TextField getTitle() {

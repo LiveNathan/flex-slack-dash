@@ -10,8 +10,8 @@ import dev.nathanlively.domain.Account;
 import dev.nathanlively.security.AuthenticatedUser;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class MyTasksGrid extends Grid<TaskDto> {
     private final AuthenticatedUser authenticatedUser;
@@ -44,7 +44,7 @@ public class MyTasksGrid extends Grid<TaskDto> {
         }
     }
 
-    private List<TaskDto> fetchTasks(Query<TaskDto, ?> query, String username) {
+    private Stream<TaskDto> fetchTasks(Query<TaskDto, ?> query, String username) {
         return readTask.all(
                 PageRequest.of(query.getPage(), query.getPageSize(),
                         VaadinSpringDataHelpers.toSpringDataSort(query)),

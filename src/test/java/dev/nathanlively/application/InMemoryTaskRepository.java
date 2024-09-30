@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryTaskRepository implements TaskRepository {
@@ -56,5 +57,12 @@ public class InMemoryTaskRepository implements TaskRepository {
         }
 
         return new PageImpl<>(pagedTasks, pageable, totalElements);
+    }
+
+    @Override
+    public List<Task> findAll() {
+        List<Task> tasks = new ArrayList<>();
+        accountRepository.findAll().forEach(account -> {tasks.addAll(account.person().tasks());});
+        return tasks;
     }
 }

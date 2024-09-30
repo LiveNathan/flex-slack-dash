@@ -10,7 +10,6 @@ import com.vaadin.flow.router.Route;
 import dev.nathanlively.adapter.in.web.MainLayout;
 import dev.nathanlively.application.ReadTask;
 import dev.nathanlively.application.UpdateTask;
-import dev.nathanlively.domain.Task;
 import dev.nathanlively.security.AuthenticatedUser;
 import jakarta.annotation.security.PermitAll;
 
@@ -24,13 +23,12 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
     private final MyTasksGrid myTasksGrid;
     private final ReadTask readTask;
     private final UpdateTask updateTask;
-    private final AuthenticatedUser authenticatedUser;
     private final String TASK_EDIT_ROUTE_TEMPLATE = "my-tasks/%s/edit";
+    private MyTasksForm myTasksForm;
 
     public MyTasksView(ReadTask readTask, UpdateTask updateTask, AuthenticatedUser authenticatedUser) {
         this.readTask = readTask;
         this.updateTask = updateTask;
-        this.authenticatedUser = authenticatedUser;
         addClassNames("my-tasks-view");
 
         SplitLayout splitLayout = new SplitLayout();
@@ -47,16 +45,14 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Long> taskId = event.getRouteParameters().get(TASK_ID).map(Long::parseLong);
+        Optional<String> taskId = event.getRouteParameters().get(TASK_ID);
         if (taskId.isPresent()) {
-            Optional<Task> taskFromBackend = readTask.get(taskId.get());
+            Optional<TaskDto> taskFromBackend = readTask.get(taskId.get());
             if (taskFromBackend.isPresent()) {
                 populateForm(taskFromBackend.get());
             } else {
                 Notification.show(String.format("The requested task was not found, ID = %s", taskId.get()), 3000,
                         Notification.Position.BOTTOM_START);
-                // when a row is selected but the data is no longer available,
-                // refresh grid
                 refreshGrid();
                 event.forwardTo(MyTasksView.class);
             }
@@ -71,7 +67,7 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         editorDiv.setClassName("editor");
         editorLayoutDiv.add(editorDiv);
 
-        MyTasksForm myTasksForm = new MyTasksForm();
+        myTasksForm = new MyTasksForm();
 
         editorDiv.add(myTasksForm);
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -85,11 +81,9 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         myTasksGrid.getDataProvider().refreshAll();
     }
 
-    private void clearForm() {
-        populateForm(null);
+    private void populateForm(TaskDto task) {
+        MyTasksFormBinder formBinder = new MyTasksFormBinder(myTasksForm, updateTask);
+        formBinder.setTask(task);
     }
 
-    private void populateForm(Task value) {
-        this.task = value;
-    }
 }

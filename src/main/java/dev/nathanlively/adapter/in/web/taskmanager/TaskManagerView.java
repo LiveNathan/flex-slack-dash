@@ -20,6 +20,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import dev.nathanlively.adapter.in.web.MainLayout;
+import dev.nathanlively.adapter.in.web.mytasks.TaskDto;
 import dev.nathanlively.application.ReadTask;
 import dev.nathanlively.domain.Task;
 import jakarta.annotation.security.RolesAllowed;
@@ -48,9 +49,9 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
 
-    private final CollaborationBinder<Task> binder;
+    private final CollaborationBinder<TaskDto> binder;
 
-    private Task task;
+    private TaskDto task;
 
     private final ReadTask readTask;
 
@@ -99,7 +100,7 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
         });
 
         // Configure Form
-        binder = new CollaborationBinder<>(Task.class, userInfo);
+        binder = new CollaborationBinder<>(TaskDto.class, userInfo);
 
         // Bind fields. This is where you'd define e.g. validation rules
 
@@ -113,7 +114,7 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
         save.addClickListener(e -> {
             try {
                 if (this.task == null) {
-                    this.task = new Task();
+                    this.task = new TaskDto();
                 }
                 binder.writeBean(this.task);
 //                taskService.update(this.task);
@@ -129,9 +130,9 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Long> taskId = event.getRouteParameters().get(TASK_ID).map(Long::parseLong);
+        Optional<String> taskId = event.getRouteParameters().get(TASK_ID);
         if (taskId.isPresent()) {
-            Optional<Task> taskFromBackend = readTask.get(taskId.get());
+            Optional<TaskDto> taskFromBackend = readTask.get(taskId.get());
             if (taskFromBackend.isPresent()) {
                 populateForm(taskFromBackend.get());
             } else {
@@ -192,7 +193,7 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
         populateForm(null);
     }
 
-    private void populateForm(Task value) {
+    private void populateForm(TaskDto value) {
         this.task = value;
         String topic = null;
         if (this.task != null && this.task.id() != null) {

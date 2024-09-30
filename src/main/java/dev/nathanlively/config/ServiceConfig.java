@@ -4,6 +4,7 @@ import dev.nathanlively.adapter.out.eclipse.EclipseAccountAdapter;
 import dev.nathanlively.adapter.out.eclipse.EclipseTaskAdapter;
 import dev.nathanlively.application.ReadTask;
 import dev.nathanlively.application.RegisterAccount;
+import dev.nathanlively.application.UpdateTask;
 import dev.nathanlively.application.port.AccountRepository;
 import dev.nathanlively.application.port.TaskRepository;
 import org.eclipse.store.storage.embedded.types.EmbeddedStorageManager;
@@ -31,5 +32,10 @@ public class ServiceConfig {
     @Bean
     public ReadTask readTask(TaskRepository taskRepository) {
         return new ReadTask(taskRepository);
+    }
+
+    @Bean
+    public UpdateTask updateTask(TaskRepository taskRepository) {
+        return new UpdateTask(taskRepository);
     }
 }

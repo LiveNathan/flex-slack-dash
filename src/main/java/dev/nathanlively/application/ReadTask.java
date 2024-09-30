@@ -18,7 +18,7 @@ public class ReadTask {
         this.repository = repository;
     }
 
-    public Optional<Task> get(Long id) {
+    public Optional<TaskDto> get(String id) {
 //        return repository.findById(id);
         return null;
     }
