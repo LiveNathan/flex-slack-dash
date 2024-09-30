@@ -1,24 +1,65 @@
 package dev.nathanlively.adapter.in.web.mytasks;
 
+import com.vaadin.flow.component.HasValueAndElement;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import java.util.stream.Stream;
 
 public class MyTasksForm extends FormLayout {
-    private final TextField title;
+    private final TextField title = new TextField("Title");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Span errorMessageField = new Span();
 
-    public MyTasksForm(TextField title) {
-        this.title = title;
-    }
+    public MyTasksForm() {
+        addClassName("my-tasks-form");
+        title.setRequired(true);
+        setRequiredIndicatorVisible(title);
 
-    private void createButtonLayout(Div editorLayoutDiv) {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setClassName("button-layout");
+        cancel.addClickListener(e -> clearForm());
+        save.addClickListener(e -> saveForm());
+
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.setDisableOnClick(true);
+        save.addClickShortcut(Key.ENTER);
+        errorMessageField.addClassNames(LumoUtility.Margin.Top.SMALL, LumoUtility.TextColor.ERROR);
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.add(save, cancel);
-        editorLayoutDiv.add(buttonLayout);
+
+        add(title, errorMessageField, buttonLayout);
     }
+
+    public TextField getTitle() {
+        return title;
+    }
+
+    public Button getCancel() {
+        return cancel;
+    }
+
+    public Button getSave() {
+        return save;
+    }
+
+    private void clearForm() {
+        title.clear();
+    }
+
+    public Span getErrorMessageField() {
+        return errorMessageField;
+    }
+
+    private void setRequiredIndicatorVisible(HasValueAndElement<?, ?>... components) {
+        Stream.of(components).forEach(comp -> comp.setRequiredIndicatorVisible(true));
+    }
+
 }

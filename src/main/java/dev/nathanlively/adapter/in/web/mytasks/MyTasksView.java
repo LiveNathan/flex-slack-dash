@@ -3,7 +3,6 @@ package dev.nathanlively.adapter.in.web.mytasks;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
@@ -40,12 +39,6 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
     private final Grid<Task> grid = new Grid<>(Task.class, false);
 
     private TextField title;
-    private TextField description;
-    private TextField event;
-    private TextField assignedTo;
-    private TextField dueDate;
-    private TextField status;
-
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
 
@@ -71,13 +64,7 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         // Configure Grid
         Optional<Account> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-//            grid.addColumn("title").setAutoWidth(true);
             grid.addColumn(Task::title).setAutoWidth(true);
-//        grid.addColumn("description").setAutoWidth(true);
-//        grid.addColumn("event").setAutoWidth(true);
-//        grid.addColumn("assignedTo").setAutoWidth(true);
-//        grid.addColumn("dueDate").setAutoWidth(true);
-//        grid.addColumn("status").setAutoWidth(true);
             grid.setItems(query -> readTask.all(
                     PageRequest.of(query.getPage(), query.getPageSize(),
                             VaadinSpringDataHelpers.toSpringDataSort(query)),
@@ -99,6 +86,9 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         }
 
         // Configure Form
+
+
+
         binder = new BeanValidationBinder<>(Task.class);
 
         // Bind fields. This is where you'd define e.g. validation rules
@@ -153,19 +143,9 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
         editorDiv.setClassName("editor");
         editorLayoutDiv.add(editorDiv);
 
-        FormLayout formLayout = new FormLayout();
-        title = new TextField("Title");
-//        description = new TextField("Description");
-//        event = new TextField("Event");
-//        assignedTo = new TextField("Assigned To");
-//        dueDate = new TextField("Due Date");
-//        status = new TextField("Status");
-//        formLayout.add(description, event, assignedTo, dueDate, status);
-        formLayout.add(title);
+        MyTasksForm myTasksForm = new MyTasksForm();
 
-        editorDiv.add(formLayout);
-        createButtonLayout(editorLayoutDiv);
-
+        editorDiv.add(myTasksForm);
         splitLayout.addToSecondary(editorLayoutDiv);
     }
 
@@ -197,6 +177,5 @@ public class MyTasksView extends Div implements BeforeEnterObserver {
     private void populateForm(Task value) {
         this.task = value;
         binder.readBean(this.task);
-
     }
 }
