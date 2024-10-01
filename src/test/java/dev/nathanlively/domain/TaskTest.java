@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TaskTest {
 
     private final MyClock fixedClock = FixedClockFactory.feb2at9am();
-    private final Person person = new Person("Nathan", "nathanlively@gmail.com", JobTitle.TECHNICIAN);
+    private final Person person = new Person("Nathan", "nathanlively@gmail.com", JobTitle.TECHNICIAN, null);
 
     @Test
     void create() {

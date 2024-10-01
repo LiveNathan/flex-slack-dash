@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class InMemoryTaskRepository implements TaskRepository {
     private final AccountRepository accountRepository;
@@ -22,12 +24,23 @@ public class InMemoryTaskRepository implements TaskRepository {
         return new InMemoryTaskRepository(accountRepository);
     }
 
+    @Override  // create an existing task
+    public void update(Task task) {
+        Objects.requireNonNull(task);
+        Objects.requireNonNull(task.id(), "ID must not be null");
+    }
+
     @Override
-    public void save(Task task, String username) {
+    public Optional<Task> findById(String id) {
+        return Optional.empty();
+    }
+
+    @Override  // for new tasks
+    public void create(Task task, String username) {
         Account account = accountRepository.findByUsername(username);
         if (account != null && account.person() != null) {
             account.person().tasks().add(task);
-            // Re-save the account so in-memory store reflects changes.
+            // Re-create the account so in-memory store reflects changes.
             accountRepository.save(account);
         }
     }
@@ -65,4 +78,6 @@ public class InMemoryTaskRepository implements TaskRepository {
         accountRepository.findAll().forEach(account -> {tasks.addAll(account.person().tasks());});
         return tasks;
     }
+
+
 }

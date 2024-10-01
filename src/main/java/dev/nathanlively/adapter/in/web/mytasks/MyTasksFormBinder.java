@@ -47,13 +47,13 @@ public class MyTasksFormBinder {
                         UI.getCurrent().navigate(MyTasksView.class);
                     },
                     errorMessage -> {
-                        String errorText = "Failed to update the data. Check again that all values are valid";
+                        String errorText = "Failed to create the data. Check again that all values are valid";
                         form.getErrorMessageField().setText(errorText);
                         form.getSave().setEnabled(true);
                     }
             );
         } catch (ValidationException validationException) {
-            Notification.show("Failed to update the data. Check again that all values are valid");
+            Notification.show("Failed to create the data. Check again that all values are valid");
         }
     }
 

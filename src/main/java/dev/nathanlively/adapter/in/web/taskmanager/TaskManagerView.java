@@ -117,13 +117,13 @@ public class TaskManagerView extends Div implements BeforeEnterObserver {
                     this.task = new TaskDto();
                 }
                 binder.writeBean(this.task);
-//                taskService.update(this.task);
+//                taskService.create(this.task);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
                 UI.getCurrent().navigate(TaskManagerView.class);
             } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
+                Notification.show("Failed to create the data. Check again that all values are valid");
             }
         });
     }

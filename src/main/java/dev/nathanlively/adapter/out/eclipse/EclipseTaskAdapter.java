@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class EclipseTaskAdapter implements TaskRepository {
     private final AccountRepository accountRepository;
@@ -19,8 +21,24 @@ public class EclipseTaskAdapter implements TaskRepository {
     }
 
     @Override
-    public void save(Task task, String username) {
+    public void update(Task task) {
+        Objects.requireNonNull(task);
+        Objects.requireNonNull(task.id(), "ID must not be null");
+    }
 
+    @Override
+    public Optional<Task> findById(String id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void create(Task task, String username) {
+        Account account = accountRepository.findByUsername(username);
+        if (account != null && account.person() != null) {
+            account.person().tasks().add(task);
+            // Re-create the account so in-memory store reflects changes.
+            accountRepository.save(account);
+        }
     }
 
     @Override
@@ -53,7 +71,9 @@ public class EclipseTaskAdapter implements TaskRepository {
     @Override
     public List<Task> findAll() {
         List<Task> tasks = new ArrayList<>();
-        accountRepository.findAll().forEach(account -> {tasks.addAll(account.person().tasks());});
+        accountRepository.findAll().forEach(account -> {
+            tasks.addAll(account.person().tasks());
+        });
         return tasks;
     }
 }

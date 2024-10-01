@@ -35,6 +35,7 @@ public class RegistrationFormBinder {
                         _ -> {
                             Notification notification = Notification.show("Registration successful! 🎉 Welcome " + userDto.getName());
                             notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                            notification.setPosition(Notification.Position.TOP_CENTER);
                             UI.getCurrent().navigate(LoginView.class);
                         },
                         errorMessage -> {
