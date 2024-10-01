@@ -28,6 +28,7 @@ public class EclipseTaskAdapter implements TaskRepository {
 
     @Override
     public Optional<Task> findById(String id) {
+        // still need to implement this.
         return Optional.empty();
     }
 
@@ -38,6 +39,7 @@ public class EclipseTaskAdapter implements TaskRepository {
             account.person().tasks().add(task);
             // Re-create the account so in-memory store reflects changes.
             accountRepository.save(account);
+            // Do we also need to call store() on Tasks somehow??
         }
     }
 
